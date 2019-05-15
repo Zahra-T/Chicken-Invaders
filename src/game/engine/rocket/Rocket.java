@@ -8,6 +8,7 @@ import game.engine.weapon.RedBullet;
 import game.engine.weapon.Weapon;
 import game.gamer.Gamer;
 import game.gamer.Shelik;
+import game.swing.GamePictures;
 import game.swing.MainFrame;
 import game.swing.SoundPlayer;
 import game.swing.TemperaturePanel;
@@ -21,28 +22,33 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Rocket implements Animatable {
-	private Gamer gamer;
+//	private Gamer gamer;
 	private int x;
 	private int y;
-	private int width;
-	private int height;
-	private BufferedImage bufferedImage;
+	private transient int width;
+	private transient int height;
+	private transient BufferedImage bufferedImage;
 	private boolean moving;
 	private Integer decreaseCoolDown = 0;
 	//	private Integer lockMillies = 0;
 	//	private TemperaturePanel temperature;
 	private Integer temperature = 0;
 	private int maxTemp = 100;
-	private ArrayList<Weapon> tirs = new ArrayList<>();
-	private ArrayList<Bomb> bombs = new ArrayList();
+	private ArrayList <Weapon>tirs = new ArrayList<>();
+	private ArrayList <Bomb>bombs = new ArrayList();
 	//	here
 	//	private boolean isOverHeat = false; 
 	private Shelik shelik;
-
-	public Rocket(int x, int y, Gamer gamer) {
-		this.gamer = gamer;
+	
+	public Rocket()
+	{
+		initialize();
+	}
+	public Rocket(int x, int y) {
+//		this.gamer = gamer;
 		this.x = x;
 		this.y = y;
+		this.moving = true;
 		initialize();
 
 	}
@@ -52,10 +58,16 @@ public class Rocket implements Animatable {
 		shelik = new Shelik();
 		
 		
+//		try {
+//			bufferedImage = ImageIO.read(new File("C:\\Users\\Markazi.co\\workspace\\Chicken Invaders\\src\\game\\resources\\Rocket.png"));
+//		} catch (IOException ex) {
+//			ex.printStackTrace();
+//		}
 		try {
-			bufferedImage = ImageIO.read(new File("C:\\Users\\Markazi.co\\workspace\\Chicken Invaders\\src\\game\\resources\\Rocket.png"));
-		} catch (IOException ex) {
-			ex.printStackTrace();
+			bufferedImage = (BufferedImage) GamePictures.getInstance().get("rocket");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 
 		this.width = bufferedImage.getWidth();
@@ -68,7 +80,7 @@ public class Rocket implements Animatable {
 			e.printStackTrace();
 		}
 		
-		this.moving = true;
+		
 	}
 
 	public void shelik()
@@ -80,7 +92,7 @@ public class Rocket implements Animatable {
 				tirs.add(new RedBullet(getX() - 90 + r * Math.cos(degree),
 						getY() + - getHeight()/2 -r * Math.sin(degree),
 						10 * Math.cos(degree),
-						-10 * Math.sin(degree), 20, gamer.getEnemies()));
+						-10 * Math.sin(degree), 20));
 			}
 			playGunSound();
 			(new AttackCoolDown(this)).start();
@@ -240,5 +252,7 @@ public class Rocket implements Animatable {
 			this.temperature = temperature;
 		}
 	}
+	
+	
 
 }

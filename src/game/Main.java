@@ -8,6 +8,8 @@ import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
+import com.google.gson.Gson;
+
 import game.swing.StartPanel;
 import game.engine.Game;
 import game.gamer.Gamer;
@@ -33,7 +35,9 @@ public class Main {
 //       
 //
 //        mainFrame.setVisible(true);
-    	
+//    	Gson gson = new Gson();
+//    	String str = gson.toJson(src);
+//    	gson.f   	
 		MainFrame frame = MainFrame.getFrame();
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
@@ -52,25 +56,32 @@ public class Main {
     
 	public static void loadInfo(String address) throws IOException
 	{
+		
 		Scanner sc = new Scanner(new File(address+"\\game.data"));
 		int n = sc.nextInt();
 		ArrayList<Gamer> gamers = Game.getGamers();
-		
+		Gson gson = new Gson();
 		for(int i = 0; i<n; i++)
 		{
-			String userName = sc.next();
-			Gamer gamer = new Gamer(userName);
+//			String userName = sc.next();
+//			Gamer gamer = new Gamer(userName);
 			
-			gamer.setWave(sc.nextInt());
-			gamer.setLevel(sc.nextInt());
-			gamer.setHeart(sc.nextInt());
-			gamer.setBomb(sc.nextInt());
-			gamer.setFireLight(sc.nextInt());
-			gamer.setDrumStick(sc.nextInt());
+//			gamer.setWave(sc.nextInt());
+//			gamer.setLevel(sc.nextInt());
+//			gamer.setHeart(sc.nextInt());
+//			gamer.setBomb(sc.nextInt());
+//			gamer.setFireLight(sc.nextInt());
+//			gamer.setDrumStick(sc.nextInt());
+			String str = sc.next();
+			Gamer gamer = gson.fromJson(str, Gamer.class);
+			gamer.setUserLabel();
+			
 			gamers.add(gamer);
-			System.out.println(userName);
+			
+//			System.out.println(userName);
 			
 		}
+		
 		
 		System.out.println("loaded");
 	}

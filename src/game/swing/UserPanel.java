@@ -103,13 +103,13 @@ public class UserPanel extends JLayeredPane{
 	{
 		Gamer gamer = new Gamer(name);
 		gamers.add(gamer);
-
+		System.out.println("user:"+gamer.getUserName());
 		UserLabel userLabel = gamer.getUserLabel();
 //		JLabel label = new JLabel("Hello");
 //		label.setForeground(Color.white);
 //		this.add(label);
 		
-		add(userLabel);
+		this.add(userLabel);
 		gamerLabels.add(userLabel);
 	}
 

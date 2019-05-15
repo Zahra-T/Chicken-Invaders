@@ -33,9 +33,9 @@ public class Game implements Animatable {
 	//	private ArrayList<Weapon> tirs ; //final?
 	//	private ArrayList<Bomb> bombs ;
 	//	private ArrayList<Enemy> enemies;
-	private ArrayList<Weapon> tirs;// = new ArrayList<>();
-	private ArrayList<Bomb> bombs;// = new ArrayList();
-	private ArrayList<Enemy> enemies;// = new ArrayList<>();
+	private ArrayList <Weapon>tirs;// = new ArrayList<>();
+	private ArrayList <Bomb>bombs;// = new ArrayList();
+	private ArrayList <Enemy> enemies;// = new ArrayList<>();
 	private Background[] backgrounds;
 
 	//	private static Game game;
@@ -89,18 +89,18 @@ public class Game implements Animatable {
 		}
 
 
-		for (Weapon tir : tirs) {
+		for (Weapon tir : (ArrayList<Weapon>)this.tirs) {
 			tir.paint(g2);
 		}
 
 		rocket.paint(g2);
 
 
-		for (Enemy enemy : enemies) {
+		for (Enemy enemy : (ArrayList<Enemy>)enemies) {
 			enemy.paint(g2);
 		}
 
-		for (Bomb bomb: bombs) {
+		for (Bomb bomb: (ArrayList<Bomb>)bombs) {
 			bomb.paint(g2);
 		}
 
@@ -231,9 +231,9 @@ public class Game implements Animatable {
 
 	public void barkhord()
 	{
-		for(Weapon tir : tirs)
+		for(Weapon tir : (ArrayList<Weapon>)tirs)
 		{
-			for(Enemy enemy : enemies)
+			for(Enemy enemy :(ArrayList<Enemy>) enemies)
 			{
 				if(doesStrike(tir, enemy))
 				{

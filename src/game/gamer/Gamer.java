@@ -24,12 +24,12 @@ public class Gamer {
 	
 
 	private String userName;
-	private UserLabel userLabel;
+	private transient UserLabel userLabel;
 	private Rocket rocket;
-	private ArrayList<Weapon> tirs;
-	private ArrayList<Bomb> bombs;
-	private ArrayList<Enemy> enemies = new ArrayList<>();
-	private boolean isChoosed;
+//	private transient ArrayList<Weapon> tirs;
+//	private transient ArrayList<Bomb> bombs;
+	private transient ArrayList<Enemy> enemies = new ArrayList<>();
+	private transient boolean isChoosed;
 	
 	private int wave = 1;
 	private int level = 1;
@@ -41,6 +41,10 @@ public class Gamer {
 
 //	private boolean shelik;
 //	private boolean lockShelik = false;
+	public Gamer() throws IOException
+	{
+		initialize();
+	}
 
 	public Gamer(String userName) throws IOException
 	{
@@ -50,13 +54,17 @@ public class Gamer {
 
 	private void initialize() throws IOException
 	{
-		rocket = new Rocket(960 - 50, 515 - 200, this);
-		this.tirs = rocket.getTirs();
-		this.bombs = rocket.getBombs();
-		userLabel = new UserLabel(this);
+		rocket = new Rocket(960 - 50, 515 - 200);
+//		this.tirs = rocket.getTirs();
+//		this.bombs = rocket.getBombs();
+//		userLabel = new UserLabel(this);
 		isChoosed = false;
-		
+		setUserLabel();
 		setEnemy();
+	}
+	public void setUserLabel()
+	{
+		userLabel = new UserLabel(this);
 	}
 	
 
@@ -111,9 +119,11 @@ public class Gamer {
 	}
 	public void setNew()
 	{
-		this.tirs = new ArrayList();
-		this.bombs = new ArrayList();
+		
+		rocket.setTirs(new ArrayList());
+		rocket.setBombs(new ArrayList());
 		this.enemies = new ArrayList();
+		this.level = 1;
 		
 		//TODO setFirstEnemies
 		//TODO setFirstLevel

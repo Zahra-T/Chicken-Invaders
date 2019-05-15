@@ -57,6 +57,7 @@ public class AddingPanel extends JPanel{
 				String name = userName.getText();
 				if(!isChoosed(name))
 				{
+					System.out.println(name);
 					UserPanel.getPanel().addUser(name);
 					StartPanel.getPanel().remove(this);
 					StartPanel.getPanel().enablePanel();

@@ -4,6 +4,8 @@ import javax.imageio.ImageIO;
 
 import game.Animatable;
 import game.enemy.Enemy;
+import game.engine.Game;
+import game.swing.GamePictures;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -18,28 +20,32 @@ public class RedBullet implements Weapon {
     private double y;
     private double vx;
     private double vy;
-    private BufferedImage bufferedImage;
-    private ArrayList<Enemy> enemies;
-	private int width;
-	private int height;
+    private transient BufferedImage bufferedImage;
+    private transient ArrayList<Enemy> enemies;
+	private transient int width;
+	private transient int height;
 	private int power;
-    public RedBullet(double x, double y, double vx, double vy,int power, ArrayList<Enemy> enemies) {
+	public RedBullet()
+	{
+		initialize();
+	}
+    public RedBullet(double x, double y, double vx, double vy,int power) {
         this.x = x;
         this.y = y;
         this.vx = vx;
         this.vy = vy;
         this.power = power;
-        this.enemies = enemies;
         initialize();
 
     }
     public void initialize()
     {
+    	this.enemies = Game.getGamer().getEnemies();
         try {
 
             // copied from http://www.java2s.com/Code/Java/Advanced-Graphics/RotatingaBufferedImage.htm
-            bufferedImage = ImageIO.read(new File("C:\\Users\\Markazi.co\\workspace\\Chicken Invaders\\src\\game\\resources\\tir.png"));
-
+//            bufferedImage = ImageIO.read(new File("C:\\Users\\Markazi.co\\workspace\\Chicken Invaders\\src\\game\\resources\\tir.png"));
+            bufferedImage = (BufferedImage) GamePictures.getInstance().get("redBullet");
             AffineTransform tx = new AffineTransform();
             tx.rotate(Math.atan2(vy, vx), bufferedImage.getWidth() , bufferedImage.getHeight() );
 

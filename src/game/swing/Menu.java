@@ -22,6 +22,8 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+import com.google.gson.Gson;
+
 import game.PaintLoop;
 import game.engine.Game;
 import game.gamer.Gamer;
@@ -204,16 +206,11 @@ public class Menu extends JLayeredPane{
 	
 	public void newGame() throws IOException, InterruptedException
 	{
-		System.out.println("new");
 		Game.getGamer().setNew();
-		System.out.println("new3");
 		MainPanel.getPanel().setVisible(true);
-		System.out.println("new5");
 		MainFrame.getFrame().add(MainPanel.getPanel());
-		System.out.println("new4");
 		MainFrame.getFrame().remove(this);
 		MainPanel.getPanel().startGame(); 
-		System.out.println("new2");
 	}
 	
 
@@ -241,15 +238,18 @@ public class Menu extends JLayeredPane{
 		PrintWriter printWriter = new PrintWriter(p);
 		ArrayList<Gamer>gamers = Game.getGamers();
 		printWriter.println(gamers.size());
+		Gson gson = new Gson();
 		for(Gamer gamer : gamers)
 		{
-			printWriter.println(gamer.getUserName());
-			printWriter.println(gamer.getWave());
-			printWriter.println(gamer.getLevel());
-			printWriter.println(gamer.getHeart());
-			printWriter.println(gamer.getBomb());
-			printWriter.println(gamer.getFireLight());
-			printWriter.println(gamer.getDrumStick());
+			String str = gson.toJson(gamer);
+			printWriter.println(str);
+//			printWriter.println(gamer.getUserName());
+//			printWriter.println(gamer.getWave());
+//			printWriter.println(gamer.getLevel());
+//			printWriter.println(gamer.getHeart());
+//			printWriter.println(gamer.getBomb());
+//			printWriter.println(gamer.getFireLight());
+//			printWriter.println(gamer.getDrumStick());
 		}
 		//
 
