@@ -29,7 +29,14 @@ public class GamePictures extends Loadable{
 		
 		pictures.put("startPanel", loadJPGImage("startPanel"));
 		
-		pictures.put("redChicken", loadPNGImage("redChicken"));
+		
+		pictures.put("chicken1", loadPNGImage("chicken1"));
+		
+		pictures.put("chicken2", loadPNGImage("chicken2"));
+		
+		pictures.put("chicken3", loadPNGImage("chicken3"));
+		
+		pictures.put("chicken4", loadPNGImage("chicken4"));
 		
 		pictures.put("rocket", loadPNGImage("rocket"));
 		

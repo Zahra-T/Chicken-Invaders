@@ -94,8 +94,8 @@ public class UserLabel extends JLabel{
 		
 		Game.setGamer(this.gamer);
 		
-		Menu.getPanel().getUserLabel().setText("Hello, "+ this.gamer.getUserName()+"!");
-		Menu.getPanel().repaint();
+//		menu.getUserLabel().setText("Hello, "+ this.gamer.getUserName()+"!");
+//		menu.repaint();
 	}
 
 }

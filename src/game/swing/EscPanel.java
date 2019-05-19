@@ -13,9 +13,11 @@ import game.engine.Game;
 
 public class EscPanel extends JPanel{
 	private String resource = "C:\\Users\\Markazi.co\\workspace\\Chicken Invaders\\src\\game\\resources\\";
-
-	public EscPanel() throws IOException
+	private MainPanel mainPanel;
+	
+	public EscPanel(MainPanel mainPanel) throws IOException
 	{
+		this.mainPanel = mainPanel;
 		initialize();
 	}
 
@@ -38,7 +40,7 @@ public class EscPanel extends JPanel{
 		Button continueButton = new Button("continueGame", 50, 40, 400, 100);
 		continueButton.addActionListener((e)->{
 			try {
-				MainPanel.getPanel().continueGame();
+				mainPanel.continueGame();
 			} catch (IOException | InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -67,10 +69,11 @@ public class EscPanel extends JPanel{
 	
 	private void toMenu() throws IOException, InterruptedException
 	{
+		Menu menu = new Menu();
 //		here
-		MainFrame.getFrame().add(Menu.getPanel());
-		MainFrame.getFrame().remove(MainPanel.getPanel());
-		MainPanel.setNull();
+		MainFrame.getFrame().add(menu);
+		MainFrame.getFrame().remove(mainPanel);
+//		MainPanel.setNull();
 		Game.getGamer().getRocket().setMoving(true);
 //		Menu.getPanel().playSound();
 		MainFrame.getFrame().validate();

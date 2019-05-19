@@ -35,7 +35,7 @@ public class Bomb implements Animatable{
 		this.x = (int) b.getX();
 		this.y = (int) b.getY();
 
-		center = new Point(MainPanel.getPanel().getWidth()/2-50, MainPanel.getPanel().getHeight()/2-50);
+		center = new Point(1920/2-50, 1030/2-50);
 		if(vx == 0 && vy == 0) { //agar ghablan sorat dehi shode dobare nashe.
 			setVelocity();
 		}

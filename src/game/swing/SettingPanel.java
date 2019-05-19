@@ -104,9 +104,9 @@ public class SettingPanel extends JLayeredPane{
 		Button back = new Button("back", 1480, 870, 380, 100);
 		back.addActionListener((e)->{
 			try {
-
+				Menu menu = new Menu();
 				MainFrame.getFrame().remove(this);
-				MainFrame.getFrame().add(Menu.getPanel());
+				MainFrame.getFrame().add(menu);
 				MainFrame.getFrame().validate();
 				MainFrame.getFrame().repaint();
 				
@@ -120,14 +120,14 @@ public class SettingPanel extends JLayeredPane{
 		
 	}
 	
-	private void toMenu() throws IOException
-	{
-//		here
-		MainFrame.getFrame().add(Menu.getPanel());
-		MainFrame.getFrame().remove(this);
-		MainFrame.getFrame().validate();
-		MainFrame.getFrame().repaint();
-	}
+//	private void toMenu() throws IOException
+//	{
+////		here
+//		MainFrame.getFrame().add(Menu.getPanel());
+//		MainFrame.getFrame().remove(this);
+//		MainFrame.getFrame().validate();
+//		MainFrame.getFrame().repaint();
+//	}
 	
 	
 

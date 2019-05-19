@@ -28,6 +28,7 @@ public class StartPanel extends JPanel{
 	SoundPlayer soundPlayer;
 	private ButtonPictures buttonPictures;
 	private GamePictures gamePictures;
+	
 	public static StartPanel getPanel() throws IOException
 	{
 		if(panel == null)
@@ -104,13 +105,14 @@ public class StartPanel extends JPanel{
 			try {
 				if(!Game.getGamer().equals(null))
 				{
+					Menu menu = new Menu();
 
-					MainFrame.getFrame().add(Menu.getPanel());
+					MainFrame.getFrame().add(menu);
 					
-					Menu.getPanel().setVisible(true);
+					menu.setVisible(true);
 					MainFrame.getFrame().remove(StartPanel.getPanel());
 					stopSound();
-					Menu.getPanel().playSound();
+					menu.playSound();
 					MainFrame.getFrame().validate();
 					MainFrame.getFrame().repaint();
 				}

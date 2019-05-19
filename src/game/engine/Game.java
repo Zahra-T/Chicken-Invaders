@@ -4,10 +4,14 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
+
+import com.google.gson.Gson;
 
 import game.Animatable;
 import game.enemy.Enemy;
-import game.enemy.RedChicken;
+import game.enemy.chickenGroup.ChickenGroup;
+import game.enemy.Chicken;
 import game.engine.rocket.Rocket;
 import game.engine.rocket.ShelikThread;
 import game.engine.rocket.TemperatureCoolDown;
@@ -35,9 +39,10 @@ public class Game implements Animatable {
 	//	private ArrayList<Enemy> enemies;
 	private ArrayList <Weapon>tirs;// = new ArrayList<>();
 	private ArrayList <Bomb>bombs;// = new ArrayList();
-	private ArrayList <Enemy> enemies;// = new ArrayList<>();
+//	private ArrayList <Enemy> enemies;// = new ArrayList<>();
 	private Background[] backgrounds;
-
+	private ArrayList<ChickenGroup> chickenGroups;
+	private File levelFile;
 	//	private static Game game;
 
 	//	public static Game getGame() throws IOException
@@ -63,10 +68,11 @@ public class Game implements Animatable {
 		//		rocket = new Rocket(width / 2 - 50, height - 200);
 		
 		rocket = gamer.getRocket();
-		tirs = gamer.getRocket().getTirs();
-		bombs = gamer.getRocket().getBombs();
-		enemies = gamer.getEnemies();
-
+		tirs = (ArrayList <Weapon>)gamer.getRocket().getTirs();
+		bombs = (ArrayList <Bomb>)gamer.getRocket().getBombs();
+//		enemies = (ArrayList <Enemy>)gamer.getEnemies();
+		chickenGroups = gamer.getChickenGroups();
+		
 
 
 		backgrounds = new Background[2];
@@ -77,6 +83,7 @@ public class Game implements Animatable {
 		System.out.println("where2");
 
 	}
+	
 
 	@Override
 	public void paint(Graphics2D g2) {
@@ -89,18 +96,18 @@ public class Game implements Animatable {
 		}
 
 
-		for (Weapon tir : (ArrayList<Weapon>)this.tirs) {
+		for (Weapon tir : this.tirs) {
 			tir.paint(g2);
 		}
 
 		rocket.paint(g2);
 
 
-		for (Enemy enemy : (ArrayList<Enemy>)enemies) {
-			enemy.paint(g2);
+		for (ChickenGroup c : chickenGroups) {
+			c.paint(g2);
 		}
 
-		for (Bomb bomb: (ArrayList<Bomb>)bombs) {
+		for (Bomb bomb: bombs) {
 			bomb.paint(g2);
 		}
 
@@ -115,6 +122,7 @@ public class Game implements Animatable {
 			}
 		}
 		rocket.move();
+		
 		synchronized (tirs) {
 			for (Weapon tir : tirs) {
 				
@@ -122,7 +130,7 @@ public class Game implements Animatable {
 //				removeOutTirs(tir);
 			}
 		}
-
+		
 		synchronized (bombs) {
 			for (Bomb bomb : bombs) {
 				bomb.move();
@@ -132,14 +140,12 @@ public class Game implements Animatable {
 				}
 			}
 		}
-
-		synchronized (enemies) {
-			for (Enemy enemy : enemies) {
-				enemy.move();
+		
+		synchronized (chickenGroups) {
+			for (ChickenGroup c : chickenGroups) {
+				c.move();
 			}
 		}
-
-
 
 
 
@@ -227,26 +233,31 @@ public class Game implements Animatable {
 		mainPanel.getAchievement().decreaseBomb();
 
 	}
-
-
+	
 	public void barkhord()
 	{
-		for(Weapon tir : (ArrayList<Weapon>)tirs)
-		{
-			for(Enemy enemy :(ArrayList<Enemy>) enemies)
-			{
-				if(doesStrike(tir, enemy))
-				{
-					enemy.decreasePower(tir);
-					if(enemy.getPower()<=0)
-					{
-						enemies.remove(enemy);
-					}
-					tirs.remove(tir);
-				}
-			}
-		}
+		gamer.kill();
 	}
+
+
+//	public void barkhord()
+//	{
+//		for(Weapon tir : tirs)
+//		{
+//			for(Enemy enemy :enemies)
+//			{
+//				if(doesStrike(tir, enemy))
+//				{
+//					enemy.decreasePower(tir);
+//					if(enemy.getPower()<=0)
+//					{
+//						enemies.remove(enemy);
+//					}
+//					tirs.remove(tir);
+//				}
+//			}
+//		}
+//	}
 
 	//	public void isDied()
 	//	{
@@ -260,51 +271,51 @@ public class Game implements Animatable {
 
 
 
-	public boolean doesStrike(Weapon tir, Enemy enemy)
-	{
-		Point northWest = new Point((int) tir.getX(), (int) tir.getY());
-		Point northEast = new Point((int) tir.getX() + tir.getWidth() , (int) tir.getY());
-		Point southWest = new Point((int)tir.getX() , (int)tir.getY() + tir.getHeight());
-		Point southEast = new Point((int)tir.getX() + tir.getWidth(), (int) tir.getY() + tir.getHeight());
+//	public boolean doesStrike(Weapon tir, Enemy enemy)
+//	{  
+//		Point northWest = new Point((int) tir.getX(), (int) tir.getY());
+//		Point northEast = new Point((int) tir.getX() + tir.getWidth() , (int) tir.getY());
+//		Point southWest = new Point((int)tir.getX() , (int)tir.getY() + tir.getHeight());
+//		Point southEast = new Point((int)tir.getX() + tir.getWidth(), (int) tir.getY() + tir.getHeight());
+//
+//		if(isIn(northWest, enemy))
+//		{
+//			return true;
+//		}
+//		else if(isIn(northEast, enemy))
+//		{
+//			return true;
+//		}
+//		else if(isIn(southWest, enemy))
+//		{
+//			return true;
+//		}
+//		else if(isIn(southEast, enemy))
+//		{
+//			return true;
+//		}
+//
+//
+//		return false;
+//	}
 
-		if(isIn(northWest, enemy))
-		{
-			return true;
-		}
-		else if(isIn(northEast, enemy))
-		{
-			return true;
-		}
-		else if(isIn(southWest, enemy))
-		{
-			return true;
-		}
-		else if(isIn(southEast, enemy))
-		{
-			return true;
-		}
-
-
-		return false;
-	}
-
-	public boolean isIn(Point p, Enemy enemy)
-	{
-
-		//		if(p.getX()>= enemy.getX()-enemy.getWidth()/2 && p.getX() <= enemy.getX()+enemy.getWidth()/2
-		//				&& p.getY() >= enemy.getY() - enemy.getHeight()/2 && p.getY() <= enemy.getY() + enemy.getHeight()/2)
-		//		{
-		//			return true;
-		//		}
-
-		if((p.getX()-enemy.getX())*(p.getX()-enemy.getX()) 
-				+ (p.getY()-enemy.getY())*(p.getY()-enemy.getY())
-				<= (enemy.getWidth()/4)*(enemy.getWidth()/4))
-		{
-			return true;
-		}
-		return false;
-	}
+//	public boolean isIn(Point p, Enemy enemy)
+//	{
+//
+//		//		if(p.getX()>= enemy.getX()-enemy.getWidth()/2 && p.getX() <= enemy.getX()+enemy.getWidth()/2
+//		//				&& p.getY() >= enemy.getY() - enemy.getHeight()/2 && p.getY() <= enemy.getY() + enemy.getHeight()/2)
+//		//		{0
+//		//			return true;
+//		//		}
+//
+//		if((p.getX()-enemy.getLocation().x)*(p.getX()-enemy.getLocation().y )
+//				+ (p.getY()-enemy.getLocation().y)*(p.getY()-enemy.getLocation().y)
+//				<= (enemy.getWidth()/4)*(enemy.getWidth()/4))
+//		{
+//			return true;
+//		}
+//		return false;
+//	}
 
 	public static Gamer getGamer() {
 		return gamer;

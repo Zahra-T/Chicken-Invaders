@@ -34,8 +34,8 @@ public class Rocket implements Animatable {
 	//	private TemperaturePanel temperature;
 	private Integer temperature = 0;
 	private int maxTemp = 100;
-	private ArrayList <Weapon>tirs = new ArrayList<>();
-	private ArrayList <Bomb>bombs = new ArrayList();
+	private ArrayList tirs = new ArrayList<>();
+	private ArrayList bombs = new ArrayList();
 	//	here
 	//	private boolean isOverHeat = false; 
 	private Shelik shelik;
@@ -92,7 +92,7 @@ public class Rocket implements Animatable {
 				tirs.add(new RedBullet(getX() - 90 + r * Math.cos(degree),
 						getY() + - getHeight()/2 -r * Math.sin(degree),
 						10 * Math.cos(degree),
-						-10 * Math.sin(degree), 20));
+						-10 * Math.sin(degree), 1));
 			}
 			playGunSound();
 			(new AttackCoolDown(this)).start();
@@ -215,7 +215,7 @@ public class Rocket implements Animatable {
 	}
 
 	public ArrayList<Weapon> getTirs() {
-		return tirs;
+		return (ArrayList<Weapon>)tirs;
 	}
 
 	public void setTirs(ArrayList<Weapon> tirs) {
@@ -223,7 +223,7 @@ public class Rocket implements Animatable {
 	}
 
 	public ArrayList<Bomb> getBombs() {
-		return bombs;
+		return (ArrayList<Bomb>)bombs;
 	}
 
 	public void setBombs(ArrayList<Bomb> bombs) {

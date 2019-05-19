@@ -31,19 +31,20 @@ import game.gamer.Gamer;
 public class Menu extends JLayeredPane{
 	private JLabel background;
 	private JLabel userLabel;
-	private static Menu menu;
+//	private static Menu menu;
 	SoundPlayer soundPlayer;
-	public static Menu getPanel() throws IOException
-	{
-		if(menu == null)
-		{
-			menu = new Menu();
-		}
+	MainPanel mainPanel;
+//	public static Menu getPanel() throws IOException
+//	{
+//		if(menu == null)
+//		{
+//			menu = new Menu();
+//		}
+//
+//		return menu;
+//	}
 
-		return menu;
-	}
-
-	private Menu() throws IOException
+	public Menu() throws IOException
 	{
 		initialize();
 	}
@@ -174,7 +175,7 @@ public class Menu extends JLayeredPane{
 		back.addActionListener((e)->{
 			try {
 
-				MainFrame.getFrame().remove(Menu.getPanel());
+				MainFrame.getFrame().remove(Menu.this);
 				MainFrame.getFrame().add(StartPanel.getPanel());
 				StartPanel.getPanel().playSound();
 				MainFrame.getFrame().validate();
@@ -206,20 +207,23 @@ public class Menu extends JLayeredPane{
 	
 	public void newGame() throws IOException, InterruptedException
 	{
-		Game.getGamer().setNew();
-		MainPanel.getPanel().setVisible(true);
-		MainFrame.getFrame().add(MainPanel.getPanel());
+		
+		Game.setGamer(new Gamer(Game.getGamer().getUserName()));
+		mainPanel = new MainPanel();
+		mainPanel.setVisible(true);
+		MainFrame.getFrame().add(mainPanel);
 		MainFrame.getFrame().remove(this);
-		MainPanel.getPanel().startGame(); 
+		mainPanel.startGame(); 
 	}
 	
 
 	public void resume() throws IOException, InterruptedException
 	{
-		MainPanel.getPanel().setVisible(true);
-		MainFrame.getFrame().add(MainPanel.getPanel());
+		mainPanel = new MainPanel();
+		mainPanel.setVisible(true);
+		MainFrame.getFrame().add(mainPanel);
 		MainFrame.getFrame().remove(this);
-		MainPanel.getPanel().startGame(); 
+		mainPanel.startGame(); 
 	}
 
 	public JLabel getUserLabel() {

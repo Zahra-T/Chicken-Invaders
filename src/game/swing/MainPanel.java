@@ -17,7 +17,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class MainPanel extends JLayeredPane {
-	public static MainPanel panel;
+//	public static MainPanel panel;
 	private Game game;
 	private Gamer gamer;
 	private Achievement achievement;
@@ -26,15 +26,15 @@ public class MainPanel extends JLayeredPane {
 	private PaintLoop paintLoop;
 	private EscPanel escPanel;
 
-	public static MainPanel getPanel() throws IOException, InterruptedException
-	{
-		if(panel == null) {
-			panel = new MainPanel();
-		}
-		return panel;
-	}
+//	public static MainPanel getPanel() throws IOException, InterruptedException
+//	{
+//		if(panel == null) {
+//			panel = new MainPanel();
+//		}
+//		return panel;
+//	}
 
-	private MainPanel() throws IOException, InterruptedException {
+	public MainPanel() throws IOException, InterruptedException {
 		initialize();
 	}
 
@@ -229,10 +229,10 @@ public class MainPanel extends JLayeredPane {
 				{
 
 					try {
-						escPanel = new EscPanel();
-						MainPanel.getPanel().add(escPanel, 3, 0);
+						escPanel = new EscPanel(MainPanel.this);
+						MainPanel.this.add(escPanel, 3, 0);
 						//						MainPanel.getPanel().disablePanel();
-						MainPanel.getPanel().pauseGame();
+						MainPanel.this.pauseGame();
 						//						StartPanel.getPanel().add(escPanel, 4, 0);
 						//						StartPanel.getPanel().setEnabled(false);
 						MainFrame.getFrame().validate();
@@ -286,6 +286,7 @@ public class MainPanel extends JLayeredPane {
 	{
 		paintLoop = new PaintLoop(this);
 		paintLoop.start();
+		gamer.comeEnemies();
 	}
 
 	public void pauseGame() throws InterruptedException, IOException
@@ -301,7 +302,7 @@ public class MainPanel extends JLayeredPane {
 	{
 		paintLoop.setRunning(true);
 		gamer.getRocket().setMoving(true);
-		MainPanel.getPanel().remove(escPanel);
+		MainPanel.this.remove(escPanel);
 		//		MainFrame.getFrame().validate();
 		//		MainFrame.getFrame().repaint();
 	}
@@ -310,10 +311,10 @@ public class MainPanel extends JLayeredPane {
 		return paintLoop;
 	}
 
-	public static void setNull()
-	{
-		panel = null;
-	}
+//	public static void setNull()
+//	{
+//		panel = null;
+//	}
 
 	public Achievement getAchievement() {
 		return achievement;

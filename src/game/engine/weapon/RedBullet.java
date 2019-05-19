@@ -21,7 +21,7 @@ public class RedBullet implements Weapon {
     private double vx;
     private double vy;
     private transient BufferedImage bufferedImage;
-    private transient ArrayList<Enemy> enemies;
+//    private transient ArrayList<Enemy> enemies;
 	private transient int width;
 	private transient int height;
 	private int power;
@@ -40,7 +40,7 @@ public class RedBullet implements Weapon {
     }
     public void initialize()
     {
-    	this.enemies = Game.getGamer().getEnemies();
+//    	this.enemies = Game.getGamer().getEnemies();
         try {
 
             // copied from http://www.java2s.com/Code/Java/Advanced-Graphics/RotatingaBufferedImage.htm
