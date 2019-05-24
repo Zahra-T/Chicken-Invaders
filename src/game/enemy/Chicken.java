@@ -19,6 +19,7 @@ public class Chicken implements Enemy{
 	private Velocity velocity;
 	private int chickenLevel;
 	private int power;
+	private Double angle;
 	//	private String groupType;
 
 	boolean b =false;
@@ -26,7 +27,7 @@ public class Chicken implements Enemy{
 	{
 		initialize();
 	}
-	public Chicken(Point location, Velocity velocity,int chickenLevel)
+	public Chicken(Point location, Velocity velocity,int chickenLevel) // velocity ro bardar badan.
 	{
 		this.location = location;
 		this.velocity = velocity;
@@ -34,6 +35,14 @@ public class Chicken implements Enemy{
 		initialize();
 		//		this.groupType = groupType;
 
+	}
+	public Chicken(Point center, double angle, double radius, int chickenLevel)
+	{
+		this.angle = angle;
+		this.chickenLevel = chickenLevel;
+		location = new Point((int)(center.getX() + radius*Math.sin(angle)), (int)(center.getY() + radius*Math.cos(angle)));
+		initialize();
+		
 	}
 
 	private void initialize()
@@ -66,18 +75,19 @@ public class Chicken implements Enemy{
 
 	public void paint(Graphics2D g2) {
 		// TODO Auto-generated method stub
+		System.out.println("paint");
 		g2.drawImage(bufferedImage, location.x - bufferedImage.getWidth()/2, location.y - bufferedImage.getHeight()/2 , null);
 	}
 
 	public void move() {
-		synchronized(location)
-		{
-			synchronized(velocity)
-			{
-			location.x += velocity.vx;
-			location.y += velocity.vy;
-			}
-		}
+		//		synchronized(location)
+		//		{
+		//			synchronized(velocity)
+		//			{
+		//			location.x += velocity.vx;
+		//			location.y += velocity.vy;
+		//			}
+		//		}
 		//		handleVelocity(groupType);
 		//		if(x >= 1700)
 		//		{
@@ -91,6 +101,17 @@ public class Chicken implements Enemy{
 		//		}
 
 	}
+	public void move(Velocity v)
+	{
+		synchronized(location)
+		{
+			this.location.x += v.vx;
+			this.location.y += v.vy;
+		}
+	}
+
+
+
 
 	//	private void handleVelocity(String groupType)
 	//	{
@@ -137,7 +158,7 @@ public class Chicken implements Enemy{
 		this.power -= tir.getPower();
 	}
 
-	
+
 	//	public int getWidth() {
 	//		return width;
 	//	}
@@ -155,13 +176,29 @@ public class Chicken implements Enemy{
 		// TODO Auto-generated method stub
 		return this.power;
 	}
-	
+
 	public Velocity getVelocity()
 	{
 		return velocity;
-		
+
 	}
-	
+
+	public void rotationalMotion(double angularFrequency, double radius, Point center)
+	{
+//		synchronized(angle) {
+			synchronized(center) {
+				synchronized(location) {
+
+					angle = angle + angularFrequency;
+					location = new Point((int)(center.getX() + radius*Math.sin(angle)), (int)(center.getY() + radius*Math.cos(angle)));
+
+				}
+			}
+//		}
+
+	}
+
+
 	@Override
 	public Point getLocation() {
 		return location;
@@ -178,7 +215,7 @@ public class Chicken implements Enemy{
 	public void setVelocity(Velocity velocity) {
 		this.velocity = velocity;
 	}
-	
+
 	public void setPower(int power) {
 		this.power = power;
 	}
@@ -191,6 +228,15 @@ public class Chicken implements Enemy{
 	public int getHeight() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	public void setAngle(double d) {
+		// TODO Auto-generated method stub
+		this.angle = d;
+		
+	}
+	public Double getAngle() {
+		// TODO Auto-generated method stub
+		return this.angle;
 	}
 
 

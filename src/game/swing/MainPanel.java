@@ -287,6 +287,7 @@ public class MainPanel extends JLayeredPane {
 		paintLoop = new PaintLoop(this);
 		paintLoop.start();
 		gamer.comeEnemies();
+//		gamer.setEnemy();
 	}
 
 	public void pauseGame() throws InterruptedException, IOException

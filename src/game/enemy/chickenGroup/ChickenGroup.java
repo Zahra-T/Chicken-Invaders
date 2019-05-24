@@ -21,5 +21,7 @@ public interface ChickenGroup extends Animatable{
 	
 	public void joinThreads();
 	
-
+	public void remove(Chicken chicken);
+	
+	public void reset();
 }

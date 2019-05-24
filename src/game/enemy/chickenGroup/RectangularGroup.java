@@ -15,7 +15,11 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 	private int chickenLevel;
 	private int row;
 	private int column;
-
+	private int step;
+	public RectangularGroup()
+	{
+		initialize();
+	}
 	public RectangularGroup(int row, int column, int chickenLevel)
 	{
 		this.chickenLevel = chickenLevel;
@@ -26,6 +30,7 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 
 	private void initialize()
 	{
+		this.step = 10;
 		chickens = new ArrayList();
 		moveHandler();
 	}
@@ -58,7 +63,13 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 			{
 				System.out.println("in for");
 
-				chicken.move();
+				chicken.move(new Velocity(step, 0));
+				if((chicken.getLocation().getX() > 1820&& step > 0) || (chicken.getLocation().getX() < 100 && step <0))
+				{
+					this.step *= -1;
+				}
+
+
 			}
 		}
 	}
@@ -92,7 +103,7 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 			}
 
 		});
-//		comeInThread.start();
+		//		comeInThread.start();
 		try {
 			comeInThread.join();
 		} catch (InterruptedException e) {
@@ -135,7 +146,7 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 			}
 
 		});
-//		velocityHandler.start();
+		//		velocityHandler.start();
 	}
 
 	@Override
@@ -157,15 +168,55 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 	@Override
 	public void joinThreads() {
 		// TODO Auto-generated method stub
+
+	}
+
+	//	@Override
+	//	public void joinThreads() {
+	//		this.comeInThread.join();
+	//		this.velocityHandler.join();
+	//		
+	//	}
+
+	public void remove(Chicken chicken)
+	{
+		synchronized(chickens) {
+			chickens.remove(chicken);
+//			reset();
+		}
+
+	}
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
 		
 	}
 
-//	@Override
-//	public void joinThreads() {
-//		this.comeInThread.join();
-//		this.velocityHandler.join();
+//	public void reset()
+//	{
+//		Thread t = new Thread(new Runnable()
+//		{
 //		
+//			@Override
+//			public void run() {
+//				for(int i = 0; i<chickens.size(); i++)
+//				{
+//					Chicken c = chickens.get(i);
+//					
+//					Point previousLocation = c.getLocation();
+//					Point newLocation = new Point()
+//					
+//					
+//				}				
+//			}
+//
+//		});
+//		
+//		t.start();
 //	}
+	
+
+
 
 
 

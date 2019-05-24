@@ -43,7 +43,7 @@ public class Main {
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setBounds(0,0, 1920, 1030);
-		loadInfo("C:\\Users\\Markazi.co\\workspace\\Chicken Invaders\\src\\game");
+//		loadInfo("C:\\Users\\Markazi.co\\workspace\\Chicken Invaders\\src\\game");
 		frame.add(StartPanel.getPanel());
 //		frame.add(Menu.getPanel());
 //

@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.Window.Type;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import game.PaintLoop;
 import game.engine.Game;

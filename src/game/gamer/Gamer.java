@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 
 import game.enemy.Enemy;
 import game.enemy.chickenGroup.ChickenGroup;
+import game.enemy.chickenGroup.CircularGroup;
 import game.enemy.chickenGroup.RectangularGroup;
 import game.Velocity;
 import game.enemy.Chicken;
@@ -24,7 +25,7 @@ import game.swing.MainPanel;
 import game.swing.SoundPlayer;
 import game.swing.UserLabel;
 
-public class Gamer {
+public class Gamer{
 
 
 	private String userName;
@@ -152,7 +153,12 @@ public class Gamer {
 	public void setEnemy()
 	{
 		//		Chicken redChicken = new Chicken(new Point(-50, 300),new Velocity(10, 0), 1);
-		chickenGroups.add(new RectangularGroup(5, 8, 2));
+//		chickenGroups.add(new RectangularGroup(5, 8, 2));
+//		CircularGroup c = 
+		
+		chickenGroups.add(new CircularGroup(10, 1));
+//		c.startThreads();
+		
 		//		enemies.add(redChicken);
 	}
 

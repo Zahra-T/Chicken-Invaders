@@ -21,7 +21,7 @@ public class PaintLoop extends Thread {
 					mainPanel.moveGame();
 					mainPanel.deadEnemy();
 					mainPanel.repaint();
-					
+		
 				}
 
 			});
