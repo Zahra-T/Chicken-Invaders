@@ -73,8 +73,10 @@ public class EscPanel extends JPanel{
 //		here
 		MainFrame.getFrame().add(menu);
 		MainFrame.getFrame().remove(mainPanel);
+	
 //		MainPanel.setNull();
 		Game.getGamer().getRocket().setMoving(true);
+//		Game.stop();
 //		Menu.getPanel().playSound();
 		MainFrame.getFrame().validate();
 		MainFrame.getFrame().repaint();

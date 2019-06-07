@@ -34,8 +34,8 @@ public class Rocket implements Animatable {
 	//	private TemperaturePanel temperature;
 	private Integer temperature = 0;
 	private int maxTemp = 100;
-	private ArrayList tirs = new ArrayList<>();
-	private ArrayList bombs = new ArrayList();
+	private ArrayList rocketTirs = new ArrayList<RedBullet>();
+	private ArrayList bombs = new ArrayList<Bomb>();
 	//	here
 	//	private boolean isOverHeat = false; 
 	private Shelik shelik;
@@ -49,6 +49,7 @@ public class Rocket implements Animatable {
 		this.x = x;
 		this.y = y;
 		this.moving = true;
+		
 		initialize();
 
 	}
@@ -79,18 +80,17 @@ public class Rocket implements Animatable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
 	}
 
 	public void shelik()
 	{
-		synchronized (tirs) {
+		synchronized (rocketTirs) {
 			int r = 100;
+//			rocketTirs.add(new RedBullet(getX() - 90, getY() -getHeight()/2-50,0,-10,1));
 			for (int i = 0; i < 5; i++) {
 				double degree = (68 + i * 10) / 180.0 * Math.PI;
-				tirs.add(new RedBullet(getX() - 90 + r * Math.cos(degree),
-						getY() + - getHeight()/2 -r * Math.sin(degree),
+				rocketTirs.add(new RedBullet(getX()-30 + r * Math.cos(degree),
+						getY()  -r * Math.sin(degree),
 						10 * Math.cos(degree),
 						-10 * Math.sin(degree), 1));
 			}
@@ -133,12 +133,11 @@ public class Rocket implements Animatable {
 	{
 		return this.height;
 	}
-
 	@Override
 	public void paint(Graphics2D g2) {
 		//        g2.setColor(new Color(135, 109, 79));
 		//        g2.fillRect(x - 50, y - 25, 100, 50);
-		g2.drawImage(bufferedImage, x - getWidth()/2, y - getHeight()/2 , null);
+		g2.drawImage(bufferedImage,(int)( x - getWidth()/2), (int)(y - getHeight()/2 ), null);
 	}
 
 	@Override
@@ -215,11 +214,11 @@ public class Rocket implements Animatable {
 	}
 
 	public ArrayList<Weapon> getTirs() {
-		return (ArrayList<Weapon>)tirs;
+		return (ArrayList<Weapon>)rocketTirs;
 	}
 
 	public void setTirs(ArrayList<Weapon> tirs) {
-		this.tirs = tirs;
+		this.rocketTirs = tirs;
 	}
 
 	public ArrayList<Bomb> getBombs() {
@@ -252,6 +251,7 @@ public class Rocket implements Animatable {
 			this.temperature = temperature;
 		}
 	}
+	
 	
 	
 

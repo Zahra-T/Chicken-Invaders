@@ -9,8 +9,10 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import game.swing.StartPanel;
+import game.enemy.chickenGroup.ChickenGroup;
 import game.engine.Game;
 import game.gamer.Gamer;
 import game.swing.MainFrame;
@@ -43,7 +45,7 @@ public class Main {
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setBounds(0,0, 1920, 1030);
-//		loadInfo("C:\\Users\\Markazi.co\\workspace\\Chicken Invaders\\src\\game");
+		loadInfo("C:\\Users\\Markazi.co\\workspace\\Chicken Invaders\\src\\game");
 		frame.add(StartPanel.getPanel());
 //		frame.add(Menu.getPanel());
 //
@@ -60,7 +62,12 @@ public class Main {
 		Scanner sc = new Scanner(new File(address+"\\game.data"));
 		int n = sc.nextInt();
 		ArrayList<Gamer> gamers = Game.getGamers();
-		Gson gson = new Gson();
+//		Gson gson = new Gson();
+//		GsonBuilder builder = new GsonBuilder();
+//		builder.registerTypeAdapter(ChickenGroup.class, new InterfaceAdapter<ChickenGroup());
+//		Gson gson = builder.create();
+		Gson gson = new GsonBuilder().registerTypeAdapter(ChickenGroup.class, new InterfaceAdapter<ChickenGroup>())
+                .create();
 		for(int i = 0; i<n; i++)
 		{
 //			String userName = sc.next();

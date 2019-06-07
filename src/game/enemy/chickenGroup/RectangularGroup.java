@@ -5,13 +5,14 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import game.Animatable;
+import game.Location;
 import game.Velocity;
 import game.enemy.Chicken;
 
 public class RectangularGroup implements Animatable,ChickenGroup{
 	public ArrayList<Chicken> chickens;
-	public Thread comeInThread;
-	public Thread velocityHandler;
+	public transient Thread comeInThread;
+	public transient Thread velocityHandler;
 	private int chickenLevel;
 	private int row;
 	private int column;
@@ -42,8 +43,6 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 		comeInFunction();
 
 		translationalMotion();
-
-
 
 	}
 
@@ -87,7 +86,7 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 					for(int j = 0; j<row; j++)
 					{
 						synchronized(chickens) {
-							Chicken c = new Chicken(new Point(-50, 150+100*j),new Velocity(10, 0), chickenLevel);
+							Chicken c = new Chicken(new Location(-50, 150+100*j),new Velocity(10, 0), chickenLevel);
 							chickens.add(c);
 							System.out.println("added");
 						}

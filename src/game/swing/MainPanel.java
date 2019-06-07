@@ -6,6 +6,9 @@ import game.gamer.Gamer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import Logger.Logger;
+
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -18,6 +21,7 @@ import java.io.IOException;
 
 public class MainPanel extends JLayeredPane {
 //	public static MainPanel panel;
+	Logger logger = Logger.getLogger();
 	private Game game;
 	private Gamer gamer;
 	private Achievement achievement;
@@ -43,7 +47,7 @@ public class MainPanel extends JLayeredPane {
 		this.setVisible(false);
 
 		setBounds(0, 0, 1920, 1030);
-		game = new Game(this);//Game.getGame();
+		game = new Game(this);//Game.getGame();  
 		game.setWidth(1920);
 		game.setHeight(1030);
 		this.gamer = Game.getGamer();
@@ -72,6 +76,7 @@ public class MainPanel extends JLayeredPane {
 				if(game.getRocket().isMoving()) {
 					game.getRocket().setX(e.getX());
 					game.getRocket().setY(e.getY());
+//					logger.debug("mouse: "+e.getX()+" "+e.getY());
 				}
 			}
 		});
@@ -269,6 +274,13 @@ public class MainPanel extends JLayeredPane {
 		//		g.drawImage(background, 0, 0, null);
 		//		try {
 		game.paint((Graphics2D) g);
+//		achievement.repaint();
+//		tempLabel.repaint();
+	}
+	
+	public void repaintFunction()
+	{
+		this.repaint();
 		achievement.repaint();
 		tempLabel.repaint();
 	}
@@ -277,15 +289,21 @@ public class MainPanel extends JLayeredPane {
 		game.move();
 	}
 
-	public void deadEnemy()
+	public void kill()
 	{
-		game.barkhord();
+		game.kill();
+	}
+	
+	public void removeOutTirs()
+	{
+		game.removeOutTirs();
 	}
 
 	public void startGame()
 	{
 		paintLoop = new PaintLoop(this);
 		paintLoop.start();
+		
 		gamer.comeEnemies();
 //		gamer.setEnemy();
 	}

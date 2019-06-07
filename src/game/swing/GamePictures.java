@@ -38,6 +38,8 @@ public class GamePictures extends Loadable{
 		
 		pictures.put("chicken4", loadPNGImage("chicken4"));
 		
+		pictures.put("giant1", loadPNGImage("giant1"));
+		
 		pictures.put("rocket", loadPNGImage("rocket"));
 		
 		pictures.put("redBullet", loadPNGImage("redBullet"));

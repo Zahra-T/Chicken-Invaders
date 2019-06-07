@@ -9,10 +9,15 @@ import java.util.Collections;
 
 import javax.swing.BorderFactory;
 
+import Logger.Logger;
 import game.enemy.Enemy;
+import game.enemy.Giant;
 import game.enemy.chickenGroup.ChickenGroup;
 import game.enemy.chickenGroup.CircularGroup;
 import game.enemy.chickenGroup.RectangularGroup;
+import game.enemy.chickenGroup.RotationalGroup;
+import game.enemy.chickenGroup.SuicideGroup;
+import game.Location;
 import game.Velocity;
 import game.enemy.Chicken;
 import game.engine.Game;
@@ -27,13 +32,14 @@ import game.swing.UserLabel;
 
 public class Gamer{
 
-
+	transient Logger logger = Logger.getLogger();
 	private String userName;
 	private transient UserLabel userLabel;
 	private Rocket rocket;
 	//	private transient ArrayList<Weapon> tirs;
 	//	private transient ArrayList<Bomb> bombs;
 	//	private transient ArrayList enemies = new ArrayList<>();
+	private Giant giant;
 	private ArrayList <ChickenGroup> chickenGroups ;
 	private transient boolean isChoosed;
 
@@ -74,40 +80,84 @@ public class Gamer{
 		userLabel = new UserLabel(this);
 	}
 
-	public void kill()
+	public void killEnemy()
 	{
-
 		synchronized(rocket.getTirs()) {
-			for(Weapon tir : rocket.getTirs())
+			ArrayList<Weapon> tirs = rocket.getTirs();
+		
+			for(int i = 0; i< tirs.size(); i++)
 			{
-				synchronized(chickenGroups) {
-					for(ChickenGroup c :chickenGroups)
-					{
-						ArrayList<Chicken> chickens = c.getGroup();
-						for(Enemy enemy : chickens) {
-							if(doesStrike(tir, enemy))
-							{
-								enemy.decreasePower(tir);
-								if(enemy.getPower()<=0)
-								{
-									chickens.remove(enemy);
+				Weapon tir = tirs.get(i);
+
+				synchronized(tir) {
+					synchronized(chickenGroups) {
+						for(int k = 0; k<chickenGroups.size(); k++)
+						{
+							ChickenGroup c = chickenGroups.get(k);
+
+							ArrayList<Chicken> chickens = c.getGroup();
+							synchronized(chickens) {
+								
+								for(int j = 0; j<chickens.size(); j++) {
+									Chicken chicken = chickens.get(j);
+									synchronized(chicken) {
+										if(doesStrike(tir, chicken))
+										{
+											chicken.decreaseHealth(tir.getPower());
+											if(chicken.getHealth()<=0)
+											{
+												c.remove(chicken);
+											}
+//											synchronized(rocket.getTirs()) {
+											rocket.getTirs().remove(tir);
+//											}
+										}
+									}
 								}
-								rocket.getTirs().remove(tir);
 							}
+
 						}
+					}
+					
+					if(giant != null && doesStrikeGiant(tir, giant))
+					{
+						giant.decreaseHealth(tir.getPower());
 					}
 				}
 			}
-
 		}
-	}
 
-	public boolean doesStrike(Weapon tir, Enemy enemy)
-	{  
-		Point northWest = new Point((int) tir.getX(), (int) tir.getY());
-		Point northEast = new Point((int) tir.getX() + tir.getWidth() , (int) tir.getY());
-		Point southWest = new Point((int)tir.getX() , (int)tir.getY() + tir.getHeight());
-		Point southEast = new Point((int)tir.getX() + tir.getWidth(), (int) tir.getY() + tir.getHeight());
+	}
+	
+//	public void 
+	private boolean doesStrikeGiant(Weapon tir, Enemy enemy) {
+		Location northWest = new Location( tir.getX(), tir.getY());
+		Location northEast = new Location( tir.getX() + tir.getWidth() ,  tir.getY());
+	
+		if(isInGiant(northWest, enemy, 110, 143)) return true;
+		if(isInGiant(northEast, enemy, 110, 143)) return true;
+		return false;
+	}
+	
+	
+	static boolean isInGiant(Location p, Enemy enemy, int a, int b) 
+	{ 
+	  double h = enemy.getX(), k = enemy.getY();
+	  double x = p.getX(), y = p.getY();
+	    // checking the equation of 
+	    // ellipse with the given point 
+	    int g = ((int)Math.pow((x - h), 2) / (int)Math.pow(a, 2)) 
+	            + ((int)Math.pow((y - k), 2) / (int)Math.pow(b, 2)); 
+	  
+	    return g<=1; 
+	} 
+
+	private boolean doesStrike(Weapon tir, Enemy enemy) { 
+		
+		Location northWest = new Location( tir.getX(), tir.getY());
+		Location northEast = new Location( tir.getX() + tir.getWidth() ,  tir.getY());
+		Location southWest = new Location(tir.getX() ,tir.getY() + tir.getHeight());
+		Location southEast = new Location(tir.getX() + tir.getWidth(),  tir.getY() + tir.getHeight());
 
 		if(isIn(northWest, enemy))
 		{
@@ -130,7 +180,7 @@ public class Gamer{
 		return false;
 	}
 
-	public boolean isIn(Point p, Enemy enemy)
+	public boolean isIn(Location p, Enemy enemy)
 	{
 
 		//		if(p.getX()>= enemy.getX()-enemy.getWidth()/2 && p.getX() <= enemy.getX()+enemy.getWidth()/2
@@ -138,10 +188,10 @@ public class Gamer{
 		//		{0
 		//			return true;
 		//		}
-
-		if((p.getX()-enemy.getLocation().x)*(p.getX()-enemy.getLocation().y )
+		
+		if((p.getX()-enemy.getLocation().x)*(p.getX()-enemy.getLocation().x )
 				+ (p.getY()-enemy.getLocation().y)*(p.getY()-enemy.getLocation().y)
-				<= (enemy.getWidth()/5)*(enemy.getWidth()/4))
+				<= (enemy.getWidth()/2)*(enemy.getWidth()/2))
 		{
 			return true;
 		}
@@ -149,16 +199,17 @@ public class Gamer{
 	}
 
 
-
 	public void setEnemy()
 	{
 		//		Chicken redChicken = new Chicken(new Point(-50, 300),new Velocity(10, 0), 1);
-//		chickenGroups.add(new RectangularGroup(5, 8, 2));
-//		CircularGroup c = 
-		
-		chickenGroups.add(new CircularGroup(10, 1));
-//		c.startThreads();
-		
+		//		chickenGroups.add(new RectangularGroup(5, 8, 2));
+		//		CircularGroup c = 
+//		chickenGroups.add(new RotationalGroup(14, 1, 2, 3));
+		giant = new Giant(1);
+//		chickenGroups.add(new SuicideGroup(10, 1, rocket));
+//		chickenGroups.add(new CircularGroup(10, 1));
+		//		c.startThreads();
+
 		//		enemies.add(redChicken);
 	}
 
@@ -335,20 +386,32 @@ public class Gamer{
 	public ArrayList<ChickenGroup> getChickenGroups() {
 		return chickenGroups;
 	}
-
+	
+	public Giant getGiant() {
+		return this.giant;
+	}
+	
 	public void setChickenGroups(ArrayList<ChickenGroup> chickenGroups) {
 		this.chickenGroups = chickenGroups;
 	}
 	
+	public void setGiant(Giant g) {
+		this.giant = g;
+	}
+
 	public void comeEnemies()
 	{
 		for(ChickenGroup c : chickenGroups)
 		{
 			c.startThreads();
 		}
+		giant.start();
 	}
-
-
+	
+	public void rocketDestroyed() {
+		this.decreaseHeart();
+		this.setRocket(new Rocket(515, 960));
+	}
 
 
 

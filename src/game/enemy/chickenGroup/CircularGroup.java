@@ -5,7 +5,9 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
 
+import Logger.Logger;
 import game.Animatable;
+import game.Location;
 import game.Velocity;
 import game.enemy.Chicken;
 
@@ -13,43 +15,52 @@ public class CircularGroup implements Animatable, ChickenGroup{
 	public ArrayList <Chicken> chickens;
 	//	public Thread comeInThread;
 	//	public Thread velocityHandler;
-	private Thread centerMoveThread;
-
+//	private Thread centerMoveThread;
+	transient Logger logger = Logger.getLogger();
 	private Double angularFrequency;
 	private Double radius;
-	private Point center;
-	private Point newCenter;
+	private Location center;
+	private Location newCenter;
 
 	private Velocity centerStep;
 	private int stepNum;
 	private boolean start;
 	Random randomValue;
-	private long previousTime;
-
-
-	public CircularGroup(int n, int chickenLevel)
+	private int chickenLevel;
+	private int num;
+//	private long previousTime;
+	public CircularGroup()
 	{
-		initialize(n, chickenLevel);
+		initialize();
 	}
 
-	private void initialize(int n, int chickenLevel)
+	public CircularGroup(int num, int chickenLevel)
+	{
+		this.num = num;
+		this.chickenLevel = chickenLevel;
+		
+		initialize();
+	}
+
+	private void initialize()
 	{
 		this.doesTranslationalMotion = true;
-	
-		this.previousTime = System.currentTimeMillis();
+
+//		this.previousTime = System.currentTimeMillis();
 		this.start = false;
 		randomValue = new Random();
-		center = new Point(100, 100);
-		newCenter = new Point(randomValue.nextInt(1920), randomValue.nextInt(1030));
-		
-		this.stepNum = 40;
+		center = new Location(100, 100);
+		newCenter = new Location(randomValue.nextInt(1920), randomValue.nextInt(1030));
+
+		this.stepNum = 100;
+		this.remainingSteps = stepNum;
 		this.centerStep = getCenterStep(stepNum);
 		angularFrequency = (double) 0.05;
-		setRadius(n);
+		setRadius(num);
 		chickens = new ArrayList();
-		for(int i = 0; i<n; i++)
+		for(int i = 0; i<num; i++)
 		{
-			double angle = ((double)i/n)*Math.PI*2;
+			double angle = ((double)i/num)*Math.PI*2;
 			chickens.add(new Chicken(center, angle, radius, chickenLevel ));
 		}
 
@@ -57,7 +68,7 @@ public class CircularGroup implements Animatable, ChickenGroup{
 
 
 
-		centerMoveThread();
+		//		centerMoveThread();
 	}
 
 	private void setRadius(int n)
@@ -66,97 +77,120 @@ public class CircularGroup implements Animatable, ChickenGroup{
 	}
 
 
-	public void centerMoveThread()
-	{
-		centerMoveThread = new Thread(new Runnable()
-		{
-			@Override
-			public void run() {
-				while(!chickens.isEmpty())
-				{
-					translationalMotion();
-					//							centerStep = getCenterStep();
-					//					System.out.println("in move Thread");
-					try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					setNewCenter();
-					setCenterStep();
-				}
-			}
-
-		});
-
-
-	}
+	//	public void centerMoveThread()
+	//	{
+	//		centerMoveThread = new Thread(new Runnable()
+	//		{
+	//			@Override
+	//			public void run() {
+	//				while(!chickens.isEmpty())
+	//				{
+	//					translationalMotion();
+	//					//							centerStep = getCenterStep();
+	//					//					System.out.println("in move Thread");
+	//					try {
+	//						Thread.sleep(5000);
+	//					} catch (InterruptedException e) {
+	//						// TODO Auto-generated catch block
+	//						e.printStackTrace();
+	//					}
+	//					setNewCenter();
+	//					setCenterStep();
+	//				}
+	//			}
+	//
+	//		});
+	//
+	//
+	//	}
 
 	private void setNewCenter()
 	{
 		center = newCenter;
-		newCenter = new Point(randomValue.nextInt(1920), randomValue.nextInt(1030));
+		newCenter = new Location(randomValue.nextInt(1920), randomValue.nextInt(1030));
 	}
 
 	@Override
 	public void translationalMotion()
 	{
-
-//		int stepNum = 40;
-//		Velocity step = getCenterStep(stepNum);
-
-		for(int i = 0; i<stepNum; i++)
+		synchronized(center)
 		{
+			center.setX(center.getX()+centerStep.vx);
+			center.setY(center.getY()+centerStep.vy);
+		}
+		synchronized(chickens) {
 			for(Chicken c : chickens)
 			{
-				System.out.println("center move");
+//				System.out.println("center move");
 				c.move(centerStep);
-			}
-			try {
-				Thread.sleep(40);  //marboot be center move thread.
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+//				System.out.println(centerStep.vx +" " + centerStep.vy);
 			}
 		}
+
+		//		int stepNum = 40;
+		//		Velocity step = getCenterStep(stepNum);
+
+		//		for(int i = 0; i<stepNum; i++)
+		//		{
+		//			for(Chicken c : chickens)
+		//			{
+		//				System.out.println("center move");
+		//				c.move(centerStep);
+		//			}
+		//			try {
+		//				Thread.sleep(40);  //marboot be center move thread.
+		//			} catch (InterruptedException e) {
+		//				e.printStackTrace();
+		//			}
+		//		}
 
 
 	}
 
-	int remainingSteps;
-	boolean doesTranslationalMotion;
+	Integer remainingSteps;
+	Boolean doesTranslationalMotion;
 
 	@Override
 	public void move() {
 		if(start) {
 			rotationalMotion();
+//			System.out.println(doesTranslationalMotion);
+			synchronized(doesTranslationalMotion) {
+				if(doesTranslationalMotion)
+				{
+					synchronized(remainingSteps) {
+						if(remainingSteps > 0)
+						{
+							
+							translationalMotion();
+							remainingSteps--;
+						}
+						else
+						{
 
-			if(doesTranslationalMotion)
-			{
-				if(remainingSteps > 0)
-				{
-					translationalMotion();
-					remainingSteps--;
-				}
-				else
-				{
-					doesTranslationalMotion = false;
-					Thread t = new Thread(new Runnable()
+							doesTranslationalMotion = false;
+							Thread t = new Thread(new Runnable()
 							{
 								@Override
 								public void run() {
+									
 									try {
 										Thread.sleep(5000);
 									} catch (InterruptedException e) {
-										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
 									setNewCenter();
 									setCenterStep();
-									doesTranslationalMotion = true;
+									
+									synchronized(doesTranslationalMotion) {
+										doesTranslationalMotion = true;
+									}
 								}
-						
+
 							});
+							t.start();
+						}
+					}
 				}
 			}
 
@@ -173,12 +207,16 @@ public class CircularGroup implements Animatable, ChickenGroup{
 		double yStep = (newCenter.getY() - center.getY())/stepNum;
 		return (new Velocity(xStep,yStep));
 	}
-	
+
 	private void setCenterStep()
 	{
-		this.remainingSteps = stepNum;
-		this.centerStep = getCenterStep(stepNum);
-	
+		synchronized(remainingSteps) {
+			this.remainingSteps = stepNum;
+		}
+		synchronized(centerStep) {
+			this.centerStep = getCenterStep(stepNum);
+		}
+
 	}
 
 
@@ -212,7 +250,7 @@ public class CircularGroup implements Animatable, ChickenGroup{
 
 	@Override
 	public void rotationalMotion() {
-
+		
 		synchronized(chickens) {
 
 			for(Chicken c : chickens)
@@ -230,17 +268,18 @@ public class CircularGroup implements Animatable, ChickenGroup{
 	@Override
 	public void startThreads() {
 		start = true;
-		centerMoveThread.start();
+		//		centerMoveThread.start();
 
 	}
 
 	@Override
 	public void joinThreads() {
-		try {
-			centerMoveThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		start = false;
+//		try {
+////			centerMoveThread.join();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 
 	}
 
@@ -253,7 +292,7 @@ public class CircularGroup implements Animatable, ChickenGroup{
 				Chicken c = chickens.get(i);
 				synchronized(c.getAngle()) {
 					chickens.get(i).setAngle( (((double)i/chickens.size())*Math.PI*2)  );
-					reduceRadius(10);
+					reduceRadius(3);
 				}
 
 			}
@@ -270,8 +309,6 @@ public class CircularGroup implements Animatable, ChickenGroup{
 
 				@Override
 				public void run() {
-					System.out.println("in reduce");
-
 					for(int i = 0; i<n; i++)
 					{
 						radius --;
@@ -295,7 +332,9 @@ public class CircularGroup implements Animatable, ChickenGroup{
 	public void remove(Chicken chicken) {
 		synchronized(chickens)
 		{
+//			synchronized(chicken) {
 			chickens.remove(chicken);
+//			}
 			reset();
 		}
 	}

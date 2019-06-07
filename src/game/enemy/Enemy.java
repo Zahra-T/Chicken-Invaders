@@ -4,19 +4,24 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 
 import game.Animatable;
+import game.Location;
 import game.engine.weapon.Weapon;
 
 public interface Enemy extends Animatable{
 
-	void decreasePower(Weapon tir);
+	void decreaseHealth(int n);
 
-	int getPower();
+	int getHealth();
 	
 	int getWidth();
 	
 	int getHeight();
+	
+	double getX();
+	
+	double getY();
 
-	Point getLocation();
+	Location getLocation();
 
 
 

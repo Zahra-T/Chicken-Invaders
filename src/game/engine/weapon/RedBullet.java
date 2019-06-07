@@ -2,6 +2,7 @@ package game.engine.weapon;
 
 import javax.imageio.ImageIO;
 
+import Logger.Logger;
 import game.Animatable;
 import game.enemy.Enemy;
 import game.engine.Game;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class RedBullet implements Weapon {
+	transient Logger logger = Logger.getLogger();
     private double x;
     private double y;
     private double vx;
@@ -71,6 +73,8 @@ public class RedBullet implements Weapon {
     public void move() {
         x += vx;
         y += vy;
+        
+        
     }
     
 
@@ -93,6 +97,7 @@ public class RedBullet implements Weapon {
 //        double l = 25.0 / Math.sqrt(vx * vx + vy * vy);
 //
 //        g2.drawLine((int) (x - l * vx), (int) (y - l * vy), (int)x, (int)y);
-        g2.drawImage(bufferedImage, (int)x, (int)y, null);
+//        g2.drawImage(bufferedImage, (int)x, (int)y, null);
+		g2.drawImage(bufferedImage, (int)(x - getWidth()/2),(int)( y - getHeight()/2) , null);
     }
 }

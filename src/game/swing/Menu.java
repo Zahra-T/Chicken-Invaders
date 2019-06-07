@@ -26,10 +26,12 @@ import javax.swing.JPanel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import game.InterfaceAdapter;
 import game.PaintLoop;
+import game.enemy.chickenGroup.ChickenGroup;
 import game.engine.Game;
 import game.gamer.Gamer;
-
+import game.InterfaceAdapter;
 public class Menu extends JLayeredPane{
 	private JLabel background;
 	private JLabel userLabel;
@@ -244,7 +246,13 @@ public class Menu extends JLayeredPane{
 		PrintWriter printWriter = new PrintWriter(p);
 		ArrayList<Gamer>gamers = Game.getGamers();
 		printWriter.println(gamers.size());
-		Gson gson = new Gson();
+//		Gson gson = new Gson();
+//		GsonBuilder builder = new GsonBuilder();
+//		builder.registerTypeAdapter(ChickenGroup.class, new InterfaceAdapter<ChickenGroup>());
+//		Gson gson = builder.create();
+		
+		Gson gson = new GsonBuilder().registerTypeAdapter(ChickenGroup.class, new InterfaceAdapter<ChickenGroup>())
+                .create();
 		for(Gamer gamer : gamers)
 		{
 			String str = gson.toJson(gamer);
