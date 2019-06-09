@@ -67,12 +67,8 @@ public class Bomb implements Animatable{
 
 	@Override
 	public void move() {
-
 		x += vx;
 		y += vy;
-
-
-
 	}
 
 	public double getDistance() //distance from center

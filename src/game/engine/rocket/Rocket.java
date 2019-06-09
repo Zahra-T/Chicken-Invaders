@@ -2,6 +2,7 @@ package game.engine.rocket;
 
 import javax.imageio.ImageIO;
 
+import Logger.Logger;
 import game.Animatable;
 import game.engine.weapon.Bomb;
 import game.engine.weapon.RedBullet;
@@ -39,6 +40,7 @@ public class Rocket implements Animatable {
 	//	here
 	//	private boolean isOverHeat = false; 
 	private Shelik shelik;
+	transient Logger logger = Logger.getLogger();
 	
 	public Rocket()
 	{
@@ -109,6 +111,7 @@ public class Rocket implements Animatable {
 	}
 
 	public int getX() {
+//		logger.debug("X : "+x);
 		return x;
 	}
 
@@ -126,12 +129,12 @@ public class Rocket implements Animatable {
 
 	public int getWidth()
 	{
-		return this.width;
+		return this.bufferedImage.getWidth();
 	}
 
 	public int getHeight()
 	{
-		return this.height;
+		return this.bufferedImage.getHeight();
 	}
 	@Override
 	public void paint(Graphics2D g2) {

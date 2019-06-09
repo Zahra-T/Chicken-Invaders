@@ -30,9 +30,8 @@ public class Chicken implements Enemy{
 	private Double angle;
 	private transient Random random;
 	transient Logger logger = Logger.getLogger();
-	transient boolean pictureLoaded;
+	boolean b = false;
 
-	boolean b =false;
 	public Chicken()
 	{
 		initialize();
@@ -60,7 +59,6 @@ public class Chicken implements Enemy{
 		this.velocity = velocity;
 		this.chickenLevel = chickenLevel;
 		initialize();
-		//		this.groupType = groupType;
 	}
 
 	public Chicken(Location center, double angle, double radius, int chickenLevel)
@@ -99,49 +97,22 @@ public class Chicken implements Enemy{
 		//			ex.printStackTrace();
 		//		}
 		this.normalVelocity = 20;
-		pictureLoaded = false;
 		random = new Random();
 		//		this.destination = new Location(random.nextInt(1920), random.nextInt(1030));
-
+		this.lastThrowEgg = System.currentTimeMillis();
 
 
 	}
 
 	public void paint(Graphics2D g2) {
-		if(!pictureLoaded) {
-			try {
-				
-				bufferedImage = (BufferedImage) GamePictures.getInstance().get("chicken"+chickenLevel);
-				pictureLoaded = true;
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		if(bufferedImage == null) {
+			setImage();
 		}
-		
-		
 		g2.drawImage(bufferedImage, (int)(location.x - bufferedImage.getWidth()/2), (int)(location.y - bufferedImage.getHeight()/2) , null);
 	}
 
 	public void move() {
-		//		synchronized(location)
-		//		{
-		//			synchronized(velocity)
-		//			{
-		//			location.x += velocity.vx;
-		//			location.y += velocity.vy;
-		//			}
-		//		}
-		//		handleVelocity(groupType);
-		//		if(x >= 1700)
-		//		{
-		//			vx *= -1;
-		//			b = true;
-		//
-		//		}
-		//		if(x <= 200 && b)
-		//		{
-		//			vx *= -1;
-		//		}
+
 	}
 
 	public void move(Velocity v)
@@ -149,12 +120,17 @@ public class Chicken implements Enemy{
 		synchronized(location)
 		{
 			//			location = new Location((center.getX() + radius*Math.sin(angle)), (center.getY() + radius*Math.cos(angle)));
-
 			this.location.x += v.vx;
 			this.location.y += v.vy;
 		}
 	}
 
+	private transient long lastThrowEgg;
+	public void throwEgg() {  //enum
+		if(System.currentTimeMillis() - lastThrowEgg >= 1) {
+			
+		}
+	}
 	//	public void move
 
 
@@ -204,12 +180,12 @@ public class Chicken implements Enemy{
 	public void decreaseHealth(int n) {
 		this.power -= n;
 	}
-	
+
 	@Override
 	public double getX() {
 		return this.location.getX();
 	}
-	
+
 	@Override 
 	public double getY() {
 		return this.location.getY();
@@ -256,7 +232,6 @@ public class Chicken implements Enemy{
 		location = new Location((center.getX() + radius*Math.sin(angle)), (center.getY() + radius*Math.cos(angle)));
 	}
 
-	//suicideGroup	
 	public void suicideMotion(int rocketX, int rocketY)
 	{
 		setSuicideDestination(rocketX, rocketY);
@@ -287,7 +262,6 @@ public class Chicken implements Enemy{
 		}
 	}
 
-
 	private void setNewDestination()
 	{
 		synchronized(beginning) {
@@ -315,8 +289,6 @@ public class Chicken implements Enemy{
 
 	}
 
-
-	//suicideGroup
 	@Override
 	public Location getLocation() {
 		return location;
@@ -339,10 +311,16 @@ public class Chicken implements Enemy{
 	}
 	@Override
 	public int getWidth() {
+		if(bufferedImage == null) {
+			setImage();
+		}
 		return bufferedImage.getWidth();
 	}
 	@Override
 	public int getHeight() {
+		if(bufferedImage == null) {
+			setImage();
+		}
 		return bufferedImage.getHeight();
 	}
 	public void setAngle(double d) {
@@ -351,6 +329,15 @@ public class Chicken implements Enemy{
 	}
 	public Double getAngle() {
 		return this.angle;
+	}
+
+	private void setImage() {
+		try {
+
+			bufferedImage = (BufferedImage) GamePictures.getInstance().get("chicken"+chickenLevel);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 

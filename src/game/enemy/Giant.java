@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 import Logger.Logger;
@@ -30,7 +31,7 @@ public class Giant implements Enemy{
 	private boolean inState;
 	private boolean start;
 	private transient Logger logger;
-	private Gamer gamer;
+	private transient Gamer gamer;
 	public Giant()
 	{
 		initialize();
@@ -44,7 +45,26 @@ public class Giant implements Enemy{
 		this.inState = false;
 		this.health = giantLevel * 250;
 		giantTirs = new ArrayList();
-		
+
+		//		RedBullet tir = new RedBullet(100, 100 , 0, 0, 1);
+		//		giantTirs.add(tir);
+		//		Thread t = new Thread(new Runnable() {
+		//
+		//			@Override
+		//			public void run() {
+		//				try {
+		//					Thread.sleep(3000);
+		//				} catch (InterruptedException e) {
+		//					// TODO Auto-generated catch block
+		//					e.printStackTrace();
+		//				}
+		//				giantTirs.remove(tir);
+		//			}
+		//			
+		//		});
+		//		t.start();
+
+
 		initialize();
 
 	}
@@ -120,6 +140,7 @@ public class Giant implements Enemy{
 			int r = 100;
 			for (int i = 0; i < 8; i++) {
 				if(Math.random() < 0.25) {
+
 					double degree = 45*i / 180.0 * Math.PI;
 					giantTirs.add(new RedBullet(getX()-50 ,
 							getY() ,
@@ -132,38 +153,54 @@ public class Giant implements Enemy{
 	}
 
 	public void killRocket() {
+		logger.debug("here");
 		synchronized(giantTirs) {
 
 			for(int i = 0; i< giantTirs.size(); i++)
 			{
+
 				RedBullet tir = giantTirs.get(i);
 
 				synchronized(tir) {
-					synchronized(giantTirs) {
 
-						if(doesStrike(tir, gamer.getRocket()))
-						{
-							
-							logger.debug("in destroy rocket");
-							gamer.rocketDestroyed();
-							giantTirs.remove(tir);
-							
-						}
-
+					if(doesStrike(tir, gamer.getRocket()))
+					{
+						logger.debug("wtf");
+						giantTirs.remove(tir);
+						//							i--;
+						gamer.rocketDestroyed();
 					}
 
 				}
-
 			}
 		}
-	}
+	}	
+	//			Iterator iterator = giantTirs.iterator();
+	//			while(iterator.hasNext()) {
+	//				RedBullet tir = (RedBullet) iterator.next();
+	//				synchronized(tir) {
+	//
+	//						if(doesStrike(tir, gamer.getRocket()))
+	//						{
+	//							logger.debug("wtf");
+	//							iterator.remove();
+	////							i--;
+	//							gamer.rocketDestroyed();
+	//							
+	//						}
+	//
+	//
+	//				}
+	//			}
+	//		}
 
-	private boolean doesStrike(Weapon tir, Rocket rocket) { 
 
-		Location northWest = new Location( tir.getX(), tir.getY());
-		Location northEast = new Location( tir.getX() + tir.getWidth() ,  tir.getY());
-		Location southWest = new Location(tir.getX() ,tir.getY() + tir.getHeight());
-		Location southEast = new Location(tir.getX() + tir.getWidth(),  tir.getY() + tir.getHeight());
+	private boolean doesStrike(RedBullet tir, Rocket rocket) { 
+
+		Location northWest = new Location( tir.getX()+tir.getWidth()/2, tir.getY()-tir.getHeight()/2);
+		Location northEast = new Location( tir.getX() - tir.getWidth()/2 ,  tir.getY()-tir.getHeight()/2);
+		Location southWest = new Location(tir.getX()+tir.getWidth()/2 ,tir.getY() + tir.getHeight()/2);
+		Location southEast = new Location(tir.getX() - tir.getWidth()/2,  tir.getY() + tir.getHeight()/2);
 
 		if(isIn(northWest, rocket))
 		{

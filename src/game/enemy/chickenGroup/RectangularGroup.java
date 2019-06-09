@@ -4,10 +4,16 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import Logger.Logger;
 import game.Animatable;
 import game.Location;
 import game.Velocity;
 import game.enemy.Chicken;
+import game.enemy.asset.AssetHolder;
+import game.enemy.asset.Coin;
+import game.enemy.asset.Egg;
+import game.enemy.asset.Empowerer;
+import game.enemy.asset.TypeEmpowerer;
 
 public class RectangularGroup implements Animatable,ChickenGroup{
 	public ArrayList<Chicken> chickens;
@@ -17,6 +23,10 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 	private int row;
 	private int column;
 	private int step;
+	private AssetHolder assetHolder;
+
+
+	private transient Logger logger = Logger.getLogger();
 	public RectangularGroup()
 	{
 		initialize();
@@ -26,14 +36,33 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 		this.chickenLevel = chickenLevel;
 		this.row = row;
 		this.column = column;
+
 		initialize();
+
 	}
 
 	private void initialize()
 	{
 		this.step = 10;
 		chickens = new ArrayList();
+		assetHolder = new AssetHolder();
 		moveHandler();
+	}
+
+	@Override
+	public void addAssets(int level, Location l) {
+		if(Math.random() < 0.05) {
+			assetHolder.add(new Egg(level, new Location(l.getX(), l.getY())));
+		}
+		if(Math.random() < 0.06) {
+			assetHolder.add(new Coin(new Location(l.getX(), l.getY())));
+		}
+		if(Math.random() < 0.03) {
+			assetHolder.add(new Empowerer(new Location(l.getX(), l.getY())));
+		}
+		else if(Math.random() < 0.03) {
+			assetHolder.add(new TypeEmpowerer(new Location(l.getX(), l.getY())));
+		}
 	}
 
 
@@ -44,6 +73,8 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 
 		translationalMotion();
 
+
+
 	}
 
 	@Override
@@ -52,30 +83,29 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 		{
 			chicken.paint(g2);
 		}
+		assetHolder.paint(g2);
 	}
 
 	@Override
 	public void move() {
-		System.out.println("in move");
 		synchronized(chickens) {
 			for(Chicken chicken: chickens)
 			{
-				System.out.println("in for");
 
 				chicken.move(new Velocity(step, 0));
-				if((chicken.getLocation().getX() > 1820&& step > 0) || (chicken.getLocation().getX() < 100 && step <0))
+				if((chicken.getLocation().getX() > 1800&& step > 0) || (chicken.getLocation().getX() < 100 && step <0))
 				{
 					this.step *= -1;
 				}
-
-
 			}
+		}
+		synchronized(assetHolder) {
+			assetHolder.move();
 		}
 	}
 
 	@Override
 	public void comeInFunction() {
-		System.out.println("in come in");
 		comeInThread = new Thread(new Runnable()
 		{
 
@@ -88,7 +118,6 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 						synchronized(chickens) {
 							Chicken c = new Chicken(new Location(-50, 150+100*j),new Velocity(10, 0), chickenLevel);
 							chickens.add(c);
-							System.out.println("added");
 						}
 
 					}
@@ -116,13 +145,11 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 	public void translationalMotion() {
 		velocityHandler = new Thread(new Runnable()
 		{
-
 			@Override
 			public void run() {
 				try {
 					Thread.sleep(9000);
 				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				while(RectangularGroup.this.chickens.size() != 0) {
@@ -132,9 +159,7 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 						{
 							Velocity v = chicken.getVelocity();
 							v.vx *= -1;
-
 						}
-
 					}
 					try {
 						Thread.sleep(4000-400*column);
@@ -181,40 +206,48 @@ public class RectangularGroup implements Animatable,ChickenGroup{
 	{
 		synchronized(chickens) {
 			chickens.remove(chicken);
-//			reset();
+			//			reset();
 		}
 
 	}
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-//	public void reset()
-//	{
-//		Thread t = new Thread(new Runnable()
-//		{
-//		
-//			@Override
-//			public void run() {
-//				for(int i = 0; i<chickens.size(); i++)
-//				{
-//					Chicken c = chickens.get(i);
-//					
-//					Point previousLocation = c.getLocation();
-//					Point newLocation = new Point()
-//					
-//					
-//				}				
-//			}
-//
-//		});
-//		
-//		t.start();
-//	}
-	
+	public int size() {
+		return this.chickens.size();
+	}
+	//	public void reset()
+	//	{
+	//		Thread t = new Thread(new Runnable()Ú
+	//		{
+	//		
+	//			@Override
+	//			public void run() {
+	//				for(int i = 0; i<chickens.size(); i++)
+	//				{
+	//					Chicken c = chickens.get(i);
+	//					
+	//					Point previousLocation = c.getLocation();
+	//					Point newLocation = new Point()
+	//					
+	//					
+	//				}				
+	//			}
+	//
+	//		});
+	//		
+	//		t.start();
+	//	}
 
+	public AssetHolder getAssetHolder() {
+		return assetHolder;
+	}
+	public void setAssetHolder(AssetHolder assetHolder) {
+		this.assetHolder = assetHolder;
+	}
 
 
 

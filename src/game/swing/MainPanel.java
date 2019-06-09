@@ -303,8 +303,9 @@ public class MainPanel extends JLayeredPane {
 	{
 		paintLoop = new PaintLoop(this);
 		paintLoop.start();
-		
-		gamer.comeEnemies();
+		game.start();
+		logger.debug("in start game");
+//		gamer.comeEnemies();
 //		gamer.setEnemy();
 	}
 

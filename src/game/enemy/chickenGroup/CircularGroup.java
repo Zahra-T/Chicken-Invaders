@@ -10,12 +10,17 @@ import game.Animatable;
 import game.Location;
 import game.Velocity;
 import game.enemy.Chicken;
+import game.enemy.asset.AssetHolder;
+import game.enemy.asset.Coin;
+import game.enemy.asset.Egg;
+import game.enemy.asset.Empowerer;
+import game.enemy.asset.TypeEmpowerer;
 
 public class CircularGroup implements Animatable, ChickenGroup{
 	public ArrayList <Chicken> chickens;
 	//	public Thread comeInThread;
 	//	public Thread velocityHandler;
-//	private Thread centerMoveThread;
+	//	private Thread centerMoveThread;
 	transient Logger logger = Logger.getLogger();
 	private Double angularFrequency;
 	private Double radius;
@@ -28,7 +33,8 @@ public class CircularGroup implements Animatable, ChickenGroup{
 	Random randomValue;
 	private int chickenLevel;
 	private int num;
-//	private long previousTime;
+	private AssetHolder assetHolder;
+	//	private long previousTime;
 	public CircularGroup()
 	{
 		initialize();
@@ -38,7 +44,7 @@ public class CircularGroup implements Animatable, ChickenGroup{
 	{
 		this.num = num;
 		this.chickenLevel = chickenLevel;
-		
+
 		initialize();
 	}
 
@@ -46,7 +52,7 @@ public class CircularGroup implements Animatable, ChickenGroup{
 	{
 		this.doesTranslationalMotion = true;
 
-//		this.previousTime = System.currentTimeMillis();
+		//		this.previousTime = System.currentTimeMillis();
 		this.start = false;
 		randomValue = new Random();
 		center = new Location(100, 100);
@@ -55,6 +61,7 @@ public class CircularGroup implements Animatable, ChickenGroup{
 		this.stepNum = 100;
 		this.remainingSteps = stepNum;
 		this.centerStep = getCenterStep(stepNum);
+		
 		angularFrequency = (double) 0.05;
 		setRadius(num);
 		chickens = new ArrayList();
@@ -64,13 +71,28 @@ public class CircularGroup implements Animatable, ChickenGroup{
 			chickens.add(new Chicken(center, angle, radius, chickenLevel ));
 		}
 
-
+		this.assetHolder = new AssetHolder();
 
 
 
 		//		centerMoveThread();
 	}
-
+	
+	@Override
+	public void addAssets(int level, Location l) {
+		if(Math.random() < 0.05) {
+			assetHolder.add(new Egg(level, new Location(l.getX(), l.getY())));
+		}
+		if(Math.random() < 0.06) {
+			assetHolder.add(new Coin(new Location(l.getX(), l.getY())));
+		}
+		if(Math.random() < 0.03) {
+			assetHolder.add(new Empowerer(new Location(l.getX(), l.getY())));
+		}
+		else if(Math.random() < 0.03) {
+			assetHolder.add(new TypeEmpowerer(new Location(l.getX(), l.getY())));
+		}
+	}
 	private void setRadius(int n)
 	{
 		radius = (double) (n * 15);
@@ -121,9 +143,7 @@ public class CircularGroup implements Animatable, ChickenGroup{
 		synchronized(chickens) {
 			for(Chicken c : chickens)
 			{
-//				System.out.println("center move");
 				c.move(centerStep);
-//				System.out.println(centerStep.vx +" " + centerStep.vy);
 			}
 		}
 
@@ -153,15 +173,15 @@ public class CircularGroup implements Animatable, ChickenGroup{
 	@Override
 	public void move() {
 		if(start) {
+			assetHolder.move();
 			rotationalMotion();
-//			System.out.println(doesTranslationalMotion);
 			synchronized(doesTranslationalMotion) {
 				if(doesTranslationalMotion)
 				{
 					synchronized(remainingSteps) {
 						if(remainingSteps > 0)
 						{
-							
+
 							translationalMotion();
 							remainingSteps--;
 						}
@@ -173,7 +193,7 @@ public class CircularGroup implements Animatable, ChickenGroup{
 							{
 								@Override
 								public void run() {
-									
+
 									try {
 										Thread.sleep(5000);
 									} catch (InterruptedException e) {
@@ -181,7 +201,7 @@ public class CircularGroup implements Animatable, ChickenGroup{
 									}
 									setNewCenter();
 									setCenterStep();
-									
+
 									synchronized(doesTranslationalMotion) {
 										doesTranslationalMotion = true;
 									}
@@ -227,6 +247,7 @@ public class CircularGroup implements Animatable, ChickenGroup{
 		{
 			chicken.paint(g2);
 		}
+		assetHolder.paint(g2);
 	}
 
 
@@ -250,7 +271,7 @@ public class CircularGroup implements Animatable, ChickenGroup{
 
 	@Override
 	public void rotationalMotion() {
-		
+
 		synchronized(chickens) {
 
 			for(Chicken c : chickens)
@@ -275,11 +296,11 @@ public class CircularGroup implements Animatable, ChickenGroup{
 	@Override
 	public void joinThreads() {
 		start = false;
-//		try {
-////			centerMoveThread.join();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
+		//		try {
+		////			centerMoveThread.join();
+		//		} catch (InterruptedException e) {
+		//			e.printStackTrace();
+		//		}
 
 	}
 
@@ -292,7 +313,7 @@ public class CircularGroup implements Animatable, ChickenGroup{
 				Chicken c = chickens.get(i);
 				synchronized(c.getAngle()) {
 					chickens.get(i).setAngle( (((double)i/chickens.size())*Math.PI*2)  );
-					reduceRadius(3);
+					reduceRadius(1);
 				}
 
 			}
@@ -311,11 +332,12 @@ public class CircularGroup implements Animatable, ChickenGroup{
 				public void run() {
 					for(int i = 0; i<n; i++)
 					{
-						radius --;
+						if(radius-1>10) {
+							radius --;
+						}
 						try {
 							Thread.sleep(100);
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -332,11 +354,22 @@ public class CircularGroup implements Animatable, ChickenGroup{
 	public void remove(Chicken chicken) {
 		synchronized(chickens)
 		{
-//			synchronized(chicken) {
 			chickens.remove(chicken);
-//			}
+			//			}
 			reset();
 		}
+	}
+
+	public int size() {
+		return this.chickens.size();
+	}
+
+	public AssetHolder getAssetHolder() {
+		return assetHolder;
+	}
+
+	public void setAssetHolder(AssetHolder assetHolder) {
+		this.assetHolder = assetHolder;
 	}
 
 

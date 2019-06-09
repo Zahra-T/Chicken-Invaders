@@ -73,8 +73,6 @@ public class RedBullet implements Weapon {
     public void move() {
         x += vx;
         y += vy;
-        
-        
     }
     
 

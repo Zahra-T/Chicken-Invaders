@@ -29,6 +29,23 @@ public class GamePictures extends Loadable{
 		
 		pictures.put("startPanel", loadJPGImage("startPanel"));
 		
+		pictures.put("egg", loadPNGImage("egg"));
+		
+		pictures.put("coin", loadPNGImage("coin"));
+		
+		pictures.put("redBullet", loadPNGImage("redBullet"));
+		
+		pictures.put("yellowBullet", loadPNGImage("yellowBullet"));
+		
+		pictures.put("grayBullet", loadPNGImage("grayBullet"));
+		
+		pictures.put("redGift", loadPNGImage("redGift"));
+		
+		pictures.put("yellowGift", loadPNGImage("yellowGift"));
+		
+		pictures.put("grayGift", loadPNGImage("grayGift"));
+		
+		pictures.put("empowerer", loadPNGImage("empowerer"));
 		
 		pictures.put("chicken1", loadPNGImage("chicken1"));
 		
@@ -53,6 +70,8 @@ public class GamePictures extends Loadable{
 		pictures.put("userPanel", loadPNGImage("userPanel"));
 		
 		pictures.put("menuPanel", loadJPGImage("menuPanel"));
+		
+	
 		
 	}
 	

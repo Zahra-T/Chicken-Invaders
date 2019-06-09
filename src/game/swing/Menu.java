@@ -211,7 +211,6 @@ public class Menu extends JLayeredPane{
 	
 	public void newGame() throws IOException, InterruptedException
 	{
-		
 		Game.setGamer(new Gamer(Game.getGamer().getUserName()));
 		mainPanel = new MainPanel();
 		mainPanel.setVisible(true);
@@ -219,7 +218,6 @@ public class Menu extends JLayeredPane{
 		MainFrame.getFrame().remove(this);
 		mainPanel.startGame(); 
 	}
-	
 
 	public void resume() throws IOException, InterruptedException
 	{

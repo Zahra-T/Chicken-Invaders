@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import Logger.Logger;
 import game.Location;
 import game.enemy.Chicken;
+import game.enemy.asset.AssetHolder;
+import game.enemy.asset.Coin;
+import game.enemy.asset.Egg;
+import game.enemy.asset.Empowerer;
+import game.enemy.asset.TypeEmpowerer;
 
 public class RotationalGroup implements ChickenGroup{
 	private transient Logger logger = Logger.getLogger();
@@ -23,7 +28,7 @@ public class RotationalGroup implements ChickenGroup{
 	private Location center;
 	private boolean start;
 	private boolean inPosition;
-	
+	private AssetHolder assetHolder;
 	public RotationalGroup()
 	{
 		initialize();
@@ -58,6 +63,24 @@ public class RotationalGroup implements ChickenGroup{
 
 
 		}
+		
+		assetHolder = new AssetHolder();
+	}
+	
+	@Override
+	public void addAssets(int level, Location l) {
+		if(Math.random() < 0.05) {
+			assetHolder.add(new Egg(level, new Location(l.getX(), l.getY())));
+		}
+		if(Math.random() < 0.06) {
+			assetHolder.add(new Coin(new Location(l.getX(), l.getY())));
+		}
+		if(Math.random() < 0.03) {
+			assetHolder.add(new Empowerer(new Location(l.getX(), l.getY())));
+		}
+		else if(Math.random() < 0.03) {
+			assetHolder.add(new TypeEmpowerer(new Location(l.getX(), l.getY())));
+		}
 	}
 
 
@@ -75,6 +98,8 @@ public class RotationalGroup implements ChickenGroup{
 		{
 			chicken.paint(g2);
 		}
+		
+		assetHolder.paint(g2);
 	}
 	@Override
 	public void move() {
@@ -89,6 +114,8 @@ public class RotationalGroup implements ChickenGroup{
 				radialMotion();
 				if(radius <= newRadius) inPosition = true;
 			}
+			
+			assetHolder.move();
 
 		}
 
@@ -276,7 +303,15 @@ public class RotationalGroup implements ChickenGroup{
 		}
 	}
 
-
+	public int size() {
+		return (chickens1.size()+chickens2.size()+chickens3.size());
+	}
+	public AssetHolder getAssetHolder() {
+		return assetHolder;
+	}
+	public void setAssetHolder(AssetHolder assetHolder) {
+		this.assetHolder = assetHolder;
+	}
 
 
 
